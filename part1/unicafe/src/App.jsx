@@ -24,6 +24,9 @@ const Ah4h4 = () => {
       <h4>good {good}</h4>
       <h4>neutral {neutral}</h4>
       <h4>bad {bad}</h4>
+      <h4>all {bad+good+neutral}</h4>
+      <h4>average {(-bad+good)/(bad+good+neutral)}</h4>
+      <h4>positive {good/(bad+good+neutral)*100} %</h4>
     </div>
   )
 }
