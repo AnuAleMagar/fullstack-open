@@ -1,11 +1,13 @@
-import React from 'react'
-
-function Statistic({good,bad,neutral}) {
+import React from "react";
+import StatisticLine from "./StatisticLine";
+function Statistic({ good, bad, neutral }) {
   return (
-    <div>      <h4>all {bad+good+neutral}</h4>
-      <h4>average {(-bad+good)/(bad+good+neutral)}</h4>
-      <h4>positive {good/(bad+good+neutral)*100} %</h4></div>
-  )
+    <div>
+        <StatisticLine text='all' value={bad + good + neutral} />
+        <StatisticLine text='average' value={(-bad + good) / (bad + good + neutral)} />
+        <StatisticLine text='positive' value={(good / (bad + good + neutral)) * 100} />
+    </div>
+  );
 }
 
-export default Statistic
+export default Statistic;
