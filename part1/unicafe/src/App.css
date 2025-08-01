@@ -1,5 +1,9 @@
-button{
-    margin: 2px;
-    border: 1px solid gray;
-    border-radius: 6px;
+button {
+  margin: 2px;
+  border: 1px solid gray;
+  border-radius: 6px;
+}
+td {
+  font-weight: 600;
+  padding: 2px;
 }
