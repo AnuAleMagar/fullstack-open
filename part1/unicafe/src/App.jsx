@@ -2,7 +2,8 @@ import React from 'react'
 import { useState } from 'react'
 import Button from './Button'
 import './App.css';
-const Ah4h4 = () => {
+import Statistic from './Statistic';
+const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
@@ -24,11 +25,9 @@ const Ah4h4 = () => {
       <h4>good {good}</h4>
       <h4>neutral {neutral}</h4>
       <h4>bad {bad}</h4>
-      <h4>all {bad+good+neutral}</h4>
-      <h4>average {(-bad+good)/(bad+good+neutral)}</h4>
-      <h4>positive {good/(bad+good+neutral)*100} %</h4>
+       <Statistic good={good} bad={bad} neutral={neutral}/>
     </div>
   )
 }
 
-export default Ah4h4
+export default App
