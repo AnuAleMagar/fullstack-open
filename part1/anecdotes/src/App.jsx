@@ -13,16 +13,36 @@ const App = () => {
     "The only way to go fast, is to go well.",
   ];
 
+
+
+    let InitalMax=0
+    let InitialIndex=0;
+    for (let key in votes) {
+      if (votes[key] > InitalMax) {
+        InitalMax = votes[key];
+        InitialIndex=key;
+      }
+    }
+
   const [selected, setSelected] = useState(0);
   const [vote, setVote] = useState(votes);
+  const [maxIndex, setmaxIndex] = useState(InitialIndex);
   function handleVote() {
-    console.log(vote);
     let newVote = { ...vote };
     if (newVote[selected] === undefined) {
       newVote[selected] = 1;
     } else {
       newVote[selected] += 1;
     }
+    let maximum=0
+    let index=0;
+    for (let key in newVote) {
+      if (newVote[key] > maximum) {
+        maximum = newVote[key];
+        index=key;
+      }
+    }
+    setmaxIndex(index)
 
     setVote(newVote);
   }
@@ -32,10 +52,15 @@ const App = () => {
   }
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
-      <p>has {vote[selected]} votes</p>
+      <p>has {vote[selected] || 0} votes</p>
       <button onClick={handleVote}>vote</button>
-      <button onClick={handleClick}>Click to see Anecdotes</button>
+      <button onClick={handleClick}>next anecdotes</button>
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[maxIndex]}</p>
+      <p>has {vote[maxIndex]} votes</p>
+    
     </div>
   );
 };
