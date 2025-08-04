@@ -1,12 +1,15 @@
 import React from "react";
 
 const Total = ({parts}) => {
+  const total=parts.reduce((total,item)=>{
+      total=total+item.exercises;
+      return total;
+  },0)
   return (
     <>
-      <p>
-        Number of exercises{" "}
-        {parts[0].exercises + parts[1].exercises + parts[2].exercises}
-      </p>
+      <h3>
+        total of  {total} exercises 
+      </h3>
     </>
   );
 };
