@@ -32,7 +32,9 @@ const App = () => {
         return;
       }
     }
-    setPersons(persons.concat(obj));
+    axios.post("http://localhost:3001/persons",obj).then((response) => {
+      setPersons(persons.concat(response.data));
+    });
     setNewName("");
     setNewNumber("");
   }
