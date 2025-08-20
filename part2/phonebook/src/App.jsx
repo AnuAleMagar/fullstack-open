@@ -1,4 +1,5 @@
 import React from "react";
+import personServices from './services/Server.js'
 import { useState, useEffect } from "react";
 import Person from "./Person";
 import PersonForm from "./PersonForm";
@@ -35,17 +36,22 @@ const App = () => {
     axios.post("http://localhost:3001/persons",obj).then((response) => {
       setPersons(persons.concat(response.data));
     });
+    personServices.create(obj).then(response=>{
+      setPersons(persons.concat(response.data));
+    })
     setNewName("");
     setNewNumber("");
   }
   function handleFilter(e) {
     setSearchTerm(e.target.value);
   }
-  useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
-  }, []);
+    useEffect(() => {
+    personServices
+      .getAll()
+      .then(response => {
+        setPersons(response.data);
+      })
+  }, [])
   return (
     <div>
       <h2>Phonebook</h2>
