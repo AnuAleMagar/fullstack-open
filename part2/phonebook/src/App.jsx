@@ -34,17 +34,27 @@ const App = () => {
             `${person.name} is already added to phonebook, replace the old number with a new one?`
           )
         ) {
-          personServices.update(id, obj).then((response) => {
-            personServices.getAll().then((response) => {
-              setPersons(response.data);
-              setErrorMessage(`New Number of ${person.name} added`);
-              setTimeout(() => {
-                setErrorMessage(null);
-              }, 5000);
+          personServices
+            .update(id, obj)
+            .then((response) => {
+              personServices.getAll().then((response) => {
+                setPersons(response.data);
+                setErrorMessage(`New Number of ${person.name} added`);
+                setTimeout(() => {
+                  setErrorMessage(null);
+                }, 5000);
+              });
+              setNewName("");
+              setNewNumber("");
+            })
+            .catch((error) => {
+              setErrorMessage(
+                `Information of ${person.name} has already been removed from server`
+              );
             });
-            setNewName("");
-            setNewNumber("");
-          });
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
         }
         return;
       }
