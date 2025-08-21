@@ -33,9 +33,6 @@ const App = () => {
         return;
       }
     }
-    axios.post("http://localhost:3001/persons",obj).then((response) => {
-      setPersons(persons.concat(response.data));
-    });
     personServices.create(obj).then(response=>{
       setPersons(persons.concat(response.data));
     })
@@ -67,7 +64,7 @@ const App = () => {
       />
       <h2>Numbers</h2>
 
-      <Person showFilteredPerson={showFilteredPerson} />
+      <Person showFilteredPerson={showFilteredPerson} persons={persons} setPersons={setPersons} />
     </div>
   );
 };
