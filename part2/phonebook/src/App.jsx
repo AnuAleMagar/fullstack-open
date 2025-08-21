@@ -1,5 +1,5 @@
 import React from "react";
-import personServices from './services/Server.js'
+import personServices from "./services/Server.js";
 import { useState, useEffect } from "react";
 import Person from "./Person";
 import PersonForm from "./PersonForm";
@@ -25,7 +25,20 @@ const App = () => {
     const obj = { name: newName, number: newNumber };
     for (let person of persons) {
       if (person.name === obj.name) {
-        alert(`${newName} is already added to phonebook`);
+        let id = person.id;
+        if (
+          window.confirm(
+            `${person.name} is already added to phonebook, replace the old number with a new one?`
+          )
+        ) {
+          personServices.update(id, obj).then((response) => {
+            personServices.getAll().then((response) => {
+              setPersons(response.data);
+            });
+            setNewName("");
+            setNewNumber("");
+          });
+        }
         return;
       }
       if (person.number === obj.number) {
@@ -33,22 +46,20 @@ const App = () => {
         return;
       }
     }
-    personServices.create(obj).then(response=>{
+    personServices.create(obj).then((response) => {
       setPersons(persons.concat(response.data));
-    })
+    });
     setNewName("");
     setNewNumber("");
   }
   function handleFilter(e) {
     setSearchTerm(e.target.value);
   }
-    useEffect(() => {
-    personServices
-      .getAll()
-      .then(response => {
-        setPersons(response.data);
-      })
-  }, [])
+  useEffect(() => {
+    personServices.getAll().then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
   return (
     <div>
       <h2>Phonebook</h2>
@@ -64,7 +75,11 @@ const App = () => {
       />
       <h2>Numbers</h2>
 
-      <Person showFilteredPerson={showFilteredPerson} persons={persons} setPersons={setPersons} />
+      <Person
+        showFilteredPerson={showFilteredPerson}
+        persons={persons}
+        setPersons={setPersons}
+      />
     </div>
   );
 };
