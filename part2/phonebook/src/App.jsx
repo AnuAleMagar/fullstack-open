@@ -5,11 +5,14 @@ import Person from "./Person";
 import PersonForm from "./PersonForm";
 import Filter from "./Filter";
 import axios from "axios";
+import "./style.css";
+import Notification from "./Notification.jsx";
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const showFilteredPerson = persons.filter((person) => {
     return person.name.includes(searchTerm);
@@ -34,6 +37,10 @@ const App = () => {
           personServices.update(id, obj).then((response) => {
             personServices.getAll().then((response) => {
               setPersons(response.data);
+              setErrorMessage(`New Number of ${person.name} added`);
+              setTimeout(() => {
+                setErrorMessage(null);
+              }, 5000);
             });
             setNewName("");
             setNewNumber("");
@@ -48,6 +55,10 @@ const App = () => {
     }
     personServices.create(obj).then((response) => {
       setPersons(persons.concat(response.data));
+      setErrorMessage(`Added ${response.data.name}`);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
     });
     setNewName("");
     setNewNumber("");
@@ -63,6 +74,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter handleFilter={handleFilter} searchTerm={searchTerm} />
       <h2>Add a new</h2>
 
