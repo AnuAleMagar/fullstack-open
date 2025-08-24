@@ -27,8 +27,17 @@ let persons = [
     number: "39-23-6423122",
   },
 ];
-
-app.use(morgan('dev'));
+morgan.token('body-req',(req,res)=>JSON.stringify(req.body))
+app.use(morgan((tokens, req, res) => {
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms',
+    tokens['body-req'](req,res)
+  ].join(' ');
+}));
 
 app.get("/api/persons", (request, response) => {
   response.json(persons);
