@@ -3,7 +3,7 @@ const app = express();
 const PORT = 3001;
 app.use(express.json());
 
-const persons = [
+let persons = [
   {
     id: "1",
     name: "Arto Hellas",
@@ -40,12 +40,19 @@ app.get("/api/info", (request, response) => {
 
 app.get("/api/persons/:id", (request, response) => {
   const idd = request.params.id;
+  console.log(typeof idd);
   const person = persons.find((per) => per.id === idd);
   if (person) {
     response.json(person);
   } else {
     response.status(404).end();
   }
+});
+
+app.delete("/api/persons/:id", (request, response) => {
+  const idd = request.params.id;
+  persons = persons.filter((per) => per.id !== idd);
+  response.status(204).end()
 });
 
 app.listen(PORT, () => {
