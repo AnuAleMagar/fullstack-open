@@ -45,12 +45,14 @@ app.use(
   })
 );
 
-app.get("/api/persons", (request, response) => {
+app.get("/api/persons", (request, response,next) => {
   Phone.find({}).then((result) => {
     response.json(result);
     result.forEach((phone) => {
       console.log(phone);
     });
+  }).catch(error=>{
+    next(error)
   });
 });
 
