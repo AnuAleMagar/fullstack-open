@@ -99,12 +99,14 @@ app.post("/api/persons", (request, response) => {
       });
     }
   }
-  const NewPerson = {
+
+  const NewPerson = new Phone({
     name: body.name,
     number: body.number,
-  };
-  persons = persons.concat(NewPerson);
-  response.json(NewPerson);
+  });
+  NewPerson.save().then((savedPhone) => {
+    response.json(savedPhone);
+  });
 });
 
 const unknownEndpoint = (request, response) => {
