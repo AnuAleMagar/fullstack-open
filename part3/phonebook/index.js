@@ -99,10 +99,10 @@ app.post("/api/persons", (request, response) => {
       });
     }
   }
-  const NewPerson = new Phone({
+  const NewPerson = {
     name: body.name,
     number: body.number,
-  });
+  };
   persons = persons.concat(NewPerson);
   response.json(NewPerson);
 });
