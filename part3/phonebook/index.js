@@ -1,9 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
-const morgan = require('morgan');
-app.use(express.static('dist'))
+const Phone = require("./models/phone");
+const morgan = require("morgan");
+app.use(express.static("dist"));
 app.use(express.json());
-debugger
+debugger;
 let persons = [
   {
     id: "1",
@@ -26,20 +28,30 @@ let persons = [
     number: "39-23-6423122",
   },
 ];
-morgan.token('body-req',(req,res)=>JSON.stringify(req.body))
-app.use(morgan((tokens, req, res) => {
-  return [
-    tokens.method(req, res),
-    tokens.url(req, res),
-    tokens.status(req, res),
-    tokens.res(req, res, 'content-length'), '-',
-    tokens['response-time'](req, res), 'ms',
-    tokens['body-req'](req,res)
-  ].join(' ');
-}));
+
+morgan.token("body-req", (req, res) => JSON.stringify(req.body));
+app.use(
+  morgan((tokens, req, res) => {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      "-",
+      tokens["response-time"](req, res),
+      "ms",
+      tokens["body-req"](req, res),
+    ].join(" ");
+  })
+);
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Phone.find({}).then((result) => {
+    response.json(result);
+    result.forEach((phone) => {
+      console.log(phone);
+    });
+  });
 });
 
 app.get("/api/info", (request, response) => {
@@ -80,28 +92,27 @@ app.post("/api/persons", (request, response) => {
       error: "number missing",
     });
   }
-  for(let person of persons){
-    if(person.name===body.name){
-        return response.status(400).json({
-      error: "name already exist",
-    });
+  for (let person of persons) {
+    if (person.name === body.name) {
+      return response.status(400).json({
+        error: "name already exist",
+      });
     }
   }
-  const NewPerson = {
+  const NewPerson = new Phone({
     name: body.name,
     number: body.number,
-    id: Math.random() * 100,
-  };
+  });
   persons = persons.concat(NewPerson);
   response.json(NewPerson);
 });
 
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
+  response.status(404).send({ error: "unknown endpoint" });
+};
 
-app.use(unknownEndpoint)
-const PORT = process.env.PORT || 3001
+app.use(unknownEndpoint);
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
