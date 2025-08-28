@@ -5,7 +5,6 @@ const Phone = require("./models/phone");
 const morgan = require("morgan");
 app.use(express.static("dist"));
 app.use(express.json());
-debugger;
 let persons = [
   {
     id: "1",
@@ -60,11 +59,14 @@ app.get("/api/persons", (request, response, next) => {
 
 app.get("/api/info", (request, response) => {
   const date = new Date();
-  response.send(
+  Phone.find({}).then((result)=>{
+      response.send(
     `Phonebook has info for ${
-      persons.length
+     Object.keys(result).length
     } people <br/> <br/> ${date.toString()}`
   );
+  })
+
 });
 
 app.get("/api/persons/:id", (request, response, next) => {
@@ -127,35 +129,6 @@ app.delete("/api/persons/:id", (request, response, next) => {
       response.status(204).end();
     })
     .catch((error) => next(error));
-});
-
-app.post("/api/persons", (request, response, next) => {
-  const body = request.body;
-  if (!body.name) {
-    return response.status(400).json({
-      error: "name missing",
-    });
-  }
-  if (!body.number) {
-    return response.status(400).json({
-      error: "number missing",
-    });
-  }
-  for (let person of persons) {
-    if (person.name === body.name) {
-      return response.status(400).json({
-        error: "name already exist",
-      });
-    }
-  }
-
-  const NewPerson = new Phone({
-    name: body.name,
-    number: body.number,
-  });
-  NewPerson.save().then((savedPhone) => {
-    response.json(savedPhone);
-  });
 });
 
 app.put("/api/persons/:id", (req, res, next) => {
