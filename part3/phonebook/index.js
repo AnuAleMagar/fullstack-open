@@ -45,15 +45,17 @@ app.use(
   })
 );
 
-app.get("/api/persons", (request, response,next) => {
-  Phone.find({}).then((result) => {
-    response.json(result);
-    result.forEach((phone) => {
-      console.log(phone);
+app.get("/api/persons", (request, response, next) => {
+  Phone.find({})
+    .then((result) => {
+      response.json(result);
+      result.forEach((phone) => {
+        console.log(phone);
+      });
+    })
+    .catch((error) => {
+      next(error);
     });
-  }).catch(error=>{
-    next(error)
-  });
 });
 
 app.get("/api/info", (request, response) => {
@@ -80,7 +82,7 @@ app.get("/api/persons/:id", (request, response, next) => {
     });
 });
 
-app.delete("/api/persons/:id", (request, response,next) => {
+app.delete("/api/persons/:id", (request, response, next) => {
   const idd = request.params.id;
   Phone.findByIdAndDelete(idd)
     .then((result) => {
@@ -89,7 +91,7 @@ app.delete("/api/persons/:id", (request, response,next) => {
     .catch((error) => next(error));
 });
 
-app.post("/api/persons", (request, response,next) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
   if (!body.name) {
     return response.status(400).json({
@@ -116,6 +118,62 @@ app.post("/api/persons", (request, response,next) => {
   NewPerson.save().then((savedPhone) => {
     response.json(savedPhone);
   });
+});
+
+app.delete("/api/persons/:id", (request, response, next) => {
+  const idd = request.params.id;
+  Phone.findByIdAndDelete(idd)
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
+});
+
+app.post("/api/persons", (request, response, next) => {
+  const body = request.body;
+  if (!body.name) {
+    return response.status(400).json({
+      error: "name missing",
+    });
+  }
+  if (!body.number) {
+    return response.status(400).json({
+      error: "number missing",
+    });
+  }
+  for (let person of persons) {
+    if (person.name === body.name) {
+      return response.status(400).json({
+        error: "name already exist",
+      });
+    }
+  }
+
+  const NewPerson = new Phone({
+    name: body.name,
+    number: body.number,
+  });
+  NewPerson.save().then((savedPhone) => {
+    response.json(savedPhone);
+  });
+});
+
+app.put("/api/persons/:id", (req, res, next) => {
+  const id = req.params.id;
+  const { name, number } = req.body;
+  Phone.findByIdAndUpdate(
+    id,
+    { name, number }
+  )
+    .then((updatedPhone) => {
+      if (!updatedPhone) {
+        return res.status(404).json({ error: "Phone not found" });
+      }
+      res.json(updatedPhone);
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error.message });
+    });
 });
 
 const unknownEndpoint = (request, response) => {
