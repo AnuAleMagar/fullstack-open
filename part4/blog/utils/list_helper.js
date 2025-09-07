@@ -1,3 +1,4 @@
+var _=require('lodash')
 const dummy=(blogs)=>{
  return 1
 }
@@ -24,5 +25,24 @@ const favoriteBlog=(blogs)=>{
     return blogs[MaxIndex]
 
 }
-module.exports={dummy,TotalLikes,favoriteBlog}
+
+//mostBlogs
+const mostBlogs=(blogs)=>{
+    if(blogs.length===0)return {}
+     const grouped=_.groupBy(blogs,'author')
+    let maxAuthor=null;
+    let maxCount=0;
+    for(let author in grouped){
+        const count=grouped[author].length;
+       if(count>maxCount){
+        maxCount=count;
+        maxAuthor=author;
+       }
+    }
+    return {
+        author:maxAuthor,
+        blogs:maxCount,
+    }
+}
+module.exports={dummy,TotalLikes,favoriteBlog,mostBlogs}
 
