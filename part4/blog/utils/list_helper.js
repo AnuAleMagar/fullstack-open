@@ -10,5 +10,19 @@ const TotalLikes=(blogs)=>{
  }
  return sum;
 }
-module.exports={dummy,TotalLikes}
+const favoriteBlog=(blogs)=>{
+    if(blogs.length===0)return {}
+    if(blogs.length===1)return blogs[0]
+    let MaxIndex=0;
+    let maxBlogCount=0;
+    for(let i=0;i<blogs.length;i++){
+        if(maxBlogCount<blogs[i].likes){
+            MaxIndex=i;
+            maxBlogCount=blogs[i].likes
+        }
+    }
+    return blogs[MaxIndex]
+
+}
+module.exports={dummy,TotalLikes,favoriteBlog}
 
