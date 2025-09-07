@@ -46,6 +46,23 @@ test("unique identifier property is named id", async () => {
     .expect("Content-Type", /application\/json/);
   assert.ok(response.body[0].id, "id property is missing");
 });
+
+test("http post request", async () => {
+  const newBlog = {
+    title: "A Guide from testing",
+    author: "Bob Johnson",
+    url: "https://example.com/guide-to-mongodb",
+    likes: 88,
+  };
+  const response = await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+ const responseAgain=await api
+    .get("/api/blogs")
+     assert.strictEqual(responseAgain.body.length, initialBlogs.length+1);
+});
 after(async () => {
   await mongoose.connection.close();
 });
