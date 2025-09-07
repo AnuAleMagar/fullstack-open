@@ -18,4 +18,8 @@ blogRouter.post("/", async (request, response) => {
     response.status(500).json({ error: "Something went wrong" });
   }
 });
+blogRouter.delete('/:id', async (request, response) => {
+  await Blog.findByIdAndDelete(request.params.id)
+  response.status(204).end()
+})
 module.exports = blogRouter;

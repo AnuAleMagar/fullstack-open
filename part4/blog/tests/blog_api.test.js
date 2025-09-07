@@ -4,29 +4,14 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 const Blog = require("../models/blog");
-
+const helper=require('./test_helper')
 const api = supertest(app);
-
-const initialBlogs = [
-  {
-    title: "A Guide to MongoDB",
-    author: "Bob Johnson",
-    url: "https://example.com/guide-to-mongodb",
-    likes: 85,
-  },
-  {
-    title: "Mastering Express.js",
-    author: "John Doe",
-    url: "https://example.com/mastering-expressjs",
-    likes: 95,
-  },
-];
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  let blogObject = new Blog(initialBlogs[0]);
+  let blogObject = new Blog(helper.initialBlogs[0]);
   await blogObject.save();
-  blogObject = new Blog(initialBlogs[1]);
+  blogObject = new Blog(helper.initialBlogs[1]);
   await blogObject.save();
 });
 
@@ -36,7 +21,7 @@ test("blogs are returned as json", async () => {
     .expect(200)
     .expect("Content-Type", /application\/json/);
 
-  assert.strictEqual(response.body.length, initialBlogs.length);
+  assert.strictEqual(response.body.length, helper.initialBlogs.length);
 });
 
 test("unique identifier property is named id", async () => {
@@ -60,7 +45,7 @@ test("http post request", async () => {
     .expect(201)
     .expect("Content-Type", /application\/json/);
   const responseAgain = await api.get("/api/blogs");
-  assert.strictEqual(responseAgain.body.length, initialBlogs.length + 1);
+  assert.strictEqual(responseAgain.body.length, helper.initialBlogs.length + 1);
 });
 test("if likes property is missing from the request,it will default to value 0", async () => {
   const newBlogWithLikeMissing = {
@@ -89,6 +74,23 @@ test("if title or url property are missing from the request,it will respondes wi
     .expect("Content-Type", /application\/json/);
 
 });
+
+
+test('a blog can be deleted', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  const titles = blogsAtEnd.map(n => n.title)
+  assert(!titles.includes(blogToDelete.content))
+
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+})
 after(async () => {
   await mongoose.connection.close();
 });
