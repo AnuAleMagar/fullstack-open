@@ -150,3 +150,28 @@ describe("most blogs", () => {
     })
   })
 });
+
+
+//mostLikes
+describe("most likes", () => {
+  test("When blog has only one blog then it should return the author and likes they have gain", () => {
+    const result = listHelper.mostLikes(listWithOneBlog);
+    assert.deepStrictEqual(result, {
+      author: listWithOneBlog[0].author,
+      likes: listWithOneBlog[0].likes
+    });
+  });
+
+  test('when list has empty blog it should return empty object',()=>{
+    const listWithEmptyBlog=[]
+    const result=listHelper.mostLikes(listWithEmptyBlog)
+    assert.deepStrictEqual(result,{})
+  })
+    test('when list has multiple blog it should return an object of author name who has maximum total likes and the total number of likes they have',()=>{
+    const result=listHelper.mostLikes(listWithMultipleBlog)
+    assert.deepStrictEqual(result,{
+        author: "Edsger W. Dijkstra",
+        likes:17
+    })
+  })
+});

@@ -44,5 +44,26 @@ const mostBlogs=(blogs)=>{
         blogs:maxCount,
     }
 }
-module.exports={dummy,TotalLikes,favoriteBlog,mostBlogs}
+//most likes
+const mostLikes=(blogs)=>{
+     if(blogs.length===0)return {}
+    const grouped=_.groupBy(blogs,'author')
+    let maxAuthor=null;
+    let maxLikes=0;
+    for(let author in grouped){
+        let authorLikes=0
+        for(let blog of grouped[author]){
+           authorLikes+=blog.likes;
+        }
+       if(authorLikes>maxLikes){
+        maxAuthor=author;
+        maxLikes=authorLikes;
+       }
+    }
+    return {
+        author:maxAuthor,
+        likes:maxLikes
+    }
+}
+module.exports={dummy,TotalLikes,favoriteBlog,mostBlogs,mostLikes}
 
