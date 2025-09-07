@@ -59,9 +59,22 @@ test("http post request", async () => {
     .send(newBlog)
     .expect(201)
     .expect("Content-Type", /application\/json/);
- const responseAgain=await api
-    .get("/api/blogs")
-     assert.strictEqual(responseAgain.body.length, initialBlogs.length+1);
+  const responseAgain = await api.get("/api/blogs");
+  assert.strictEqual(responseAgain.body.length, initialBlogs.length + 1);
+});
+test("if likes property is missing from the request,it will default to value 0", async () => {
+  const newBlogWithLikeMissing = {
+    title: "Testing for blog with like missing",
+    author: "Fullstack",
+    url: "https://example.com/guide-to-mongodb",
+    
+  };
+  const response = await api
+    .post("/api/blogs")
+    .send(newBlogWithLikeMissing)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+  assert.strictEqual(response.body.likes, 0);
 });
 after(async () => {
   await mongoose.connection.close();
