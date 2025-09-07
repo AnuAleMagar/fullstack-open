@@ -39,6 +39,13 @@ test("blogs are returned as json", async () => {
   assert.strictEqual(response.body.length, initialBlogs.length);
 });
 
+test("unique identifier property is named id", async () => {
+  const response = await api
+    .get("/api/blogs")
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+  assert.ok(response.body[0].id, "id property is missing");
+});
 after(async () => {
   await mongoose.connection.close();
 });
