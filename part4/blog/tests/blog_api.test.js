@@ -76,6 +76,19 @@ test("if likes property is missing from the request,it will default to value 0",
     .expect("Content-Type", /application\/json/);
   assert.strictEqual(response.body.likes, 0);
 });
+test("if title or url property are missing from the request,it will respondes with the status code 400", async () => {
+  const newBlogWithTitleMissing = {
+    author: "Fullstack",
+    url: "https://example.com/guide-to-mongodb",
+    
+  };
+  const response = await api
+    .post("/api/blogs")
+    .send(newBlogWithTitleMissing)
+    .expect(400)
+    .expect("Content-Type", /application\/json/);
+
+});
 after(async () => {
   await mongoose.connection.close();
 });
