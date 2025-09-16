@@ -1,15 +1,20 @@
 const blogRouter = require("express").Router();
 const Blog = require("../models/blog");
-blogRouter.get("/", (request, response) => {
-  Blog.find({}).then((blogs) => {
+const User = require("../models/user");
+blogRouter.get("/", async (request, response) => {
+    const blogs = await Blog.find({}).populate("user");
     response.json(blogs);
-  });
 });
 
+
 blogRouter.post("/", async (request, response) => {
+  const body=request.body;
   const blog = new Blog(request.body);
   try {
     const savedBlog = await blog.save();
+    const user = await User.findById(body.user);
+    user.blogs = user.blogs.concat(savedBlog._id);
+    await user.save();
     response.status(201).json(savedBlog);
   } catch (error) {
     if (error.name === "ValidationError") {
