@@ -14,6 +14,18 @@ const initialBlogs = [
     likes: 95,
   },
 ];
+const initialUsers = [
+  {
+    "name": "Alice Johnson",
+    "username": "alice",
+    "password": "password123"
+  },
+  {
+    "name": "Brian Smith",
+    "username": "bsmith88",
+    "password": "qwerty!789"
+  },
+];
 const nonExistingId = async () => {
   const blog = new Blog({ title: "Deleting this",
     author: "John Doe",
@@ -30,6 +42,11 @@ const blogsInDb = async () => {
   return blogs.map(blog => blog.toJSON())
 }
 
+const usersInDb=async ()=>{
+  const users=await Users.find({})
+  return users.map(user=>user.toJSON())
+}
+
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb
+  initialBlogs, nonExistingId, blogsInDb,usersInDb,initialUsers
 }
