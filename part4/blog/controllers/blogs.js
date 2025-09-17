@@ -10,16 +10,18 @@ blogRouter.get("/", async (request, response) => {
 
 blogRouter.post("/", async (request, response, next) => {
   try {
-  const body = request.body;
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: "token invalid" });
-  }
-  const user = await User.findById(decodedToken.id);
-  const blog = new Blog(request.body);
-  if (!user) {
-    return response.status(400).json({ error: "UserId missing or not valid" });
-  }
+    const body = request.body;
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: "token invalid" });
+    }
+    const user = await User.findById(decodedToken.id);
+    const blog = new Blog(request.body);
+    if (!user) {
+      return response
+        .status(400)
+        .json({ error: "UserId missing or not valid" });
+    }
     const savedBlog = await blog.save();
     user.blogs = user.blogs.concat(savedBlog._id);
     await user.save();
@@ -28,9 +30,17 @@ blogRouter.post("/", async (request, response, next) => {
     next(error);
   }
 });
-blogRouter.delete("/:id", async (request, response) => {
-  await Blog.findByIdAndDelete(request.params.id);
-  response.status(204).end();
+blogRouter.delete("/:id", async (request, response, next) => {
+  try {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+    const blog = await Blog.findById(request.params.id);
+    if (blog.user.toString() === decodedToken.id.toString()) {
+      await Blog.findByIdAndDelete(request.params.id);
+      response.status(204).end();
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 blogRouter.put("/:id", async (request, response) => {
