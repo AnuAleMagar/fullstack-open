@@ -57,6 +57,7 @@ const App = () => {
 
   return (
     <div>
+      {errorMessage}
       {!user && loginForm()}
       {user && (
         <>
