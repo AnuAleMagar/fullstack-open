@@ -1,6 +1,6 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog, setBlogs }) => {
   const [visible, setVisible] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
 
@@ -15,11 +15,24 @@ const Blog = ({ blog, user }) => {
     setVisible(!visible);
   }
   function handleLikeClick() {
-     setLikes(prev => {
-    const newLikes = prev + 1;
-    blogService.updateLikes(blog.id, newLikes);
-    return newLikes;
-  });
+    setLikes((prev) => {
+      const newLikes = prev + 1;
+      blogService.updateLikes(blog.id, newLikes);
+      return newLikes;
+    });
+  }
+  async function handleDelete() {
+    try {
+      const ok = window.confirm(`Remove blog ${blog.title} by ${blog.author}?`);
+      if (!ok) return;
+      await blogService.deleteBlog(blog.id);
+      alert("Blog deleted successfully!");
+      blogService.getAll().then((blogs) => setBlogs(blogs));
+    } catch (error) {
+      console.error(error);
+        alert("Session expired. Please log in again.");
+        window.location.reload();
+    }
   }
   return (
     <div style={blogStyle}>
@@ -32,7 +45,15 @@ const Blog = ({ blog, user }) => {
           <span style={{ display: "block", margin: 0 }}>
             Likes: {likes} <button onClick={handleLikeClick}>like</button>
           </span>
-          <span style={{ display: "block", margin: 0 }}>{user.username}</span>
+          <span style={{ display: "block", margin: 0 }}>
+            {blog.user.username}
+          </span>
+          <button
+            style={{ background: "blue", color: "white", borderRadius: "5px" }}
+            onClick={handleDelete}
+          >
+            remove
+          </button>
         </>
       )}
     </div>
