@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
-import blogService from "./services/blogs";
 import loginService from "./services/loginService";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
+import CreateBlog from "./components/CreateBlog";
+import blogService from "./services/blogs";
 const App = () => {
   const noteFormRef = useRef();
   const [blogs, setBlogs] = useState([]);
@@ -11,13 +12,9 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
-  const [author, setAuthor] = useState("");
   const [style, setStyle] = useState({});
   const handleLogin = async (event) => {
     event.preventDefault();
-
     try {
       const user = await loginService.login({ username, password });
       setUser(user);
@@ -48,39 +45,6 @@ const App = () => {
       }, 5000);
     }
   };
-  const handleBlogPost = async (event) => {
-    event.preventDefault();
-    try {
-      await blogService.create({ title, author, url });
-      setTitle("");
-      setUrl("");
-      setAuthor("");
-      const updatedBlogs = await blogService.getAll();
-      setBlogs(updatedBlogs);
-      setStyle({
-        border: "4px solid green",
-        paddingLeft: "5px",
-        borderRadius: "10px",
-        color: "green",
-      });
-      noteFormRef.current.toggleVisibility();
-      setErrorMessage(`A new Blog ${title} by ${author} added`);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    } catch {
-      setErrorMessage("Failed to add new blog");
-      setStyle({
-        border: "4px solid red",
-        paddingLeft: "5px",
-        borderRadius: "10px",
-        color: "Red",
-      });
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    }
-  };
 
   function handleLogout() {
     window.localStorage.removeItem("loggedUser");
@@ -95,7 +59,6 @@ const App = () => {
             <Notification message={errorMessage} />
           </div>
         )}
-
         <label>
           username
           <input
@@ -118,49 +81,13 @@ const App = () => {
       <button type="submit">login</button>
     </form>
   );
-  const blogForm = () => (
-    <form onSubmit={handleBlogPost}>
-      <div>
-        <label>
-          title:
-          <input
-            type="text"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          author:
-          <input
-            type="text"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          url:
-          <input
-            type="text"
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </label>
-      </div>
-      <button type="submit">create</button>
-    </form>
-  );
-
+ 
   useEffect(() => {
     const loggedUser = JSON.parse(window.localStorage.getItem("loggedUser"));
     if (loggedUser) {
       setUser(loggedUser);
       blogService.setToken(loggedUser.token);
     }
-
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
@@ -182,7 +109,7 @@ const App = () => {
           </p>
           <br />
           <Togglable buttonLabel="create new blog" ref={noteFormRef}>
-            {blogForm()}
+            <CreateBlog  setErrorMessage={setErrorMessage} setBlogs={setBlogs} setStyle={setStyle} noteFormRef={noteFormRef}/>
           </Togglable>
           <br />
           {blogs.map((blog) => (
@@ -193,5 +120,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
