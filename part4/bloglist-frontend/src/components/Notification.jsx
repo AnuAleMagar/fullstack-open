@@ -1,10 +1,9 @@
-import React from 'react'
 
-function Notification({message}) {
+function Notification({ message }) {
   return (
-  <>
-  <p>{message}</p>
-  </>
+    <>
+      <p>{message}</p>
+    </>
   )
 }
 

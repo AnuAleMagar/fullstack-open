@@ -1,17 +1,17 @@
-import React ,{ useState } from "react";
-import blogService from "../services/blogs";
+import React ,{ useState } from 'react'
+import blogService from '../services/blogs'
 
-function CreateBlog({setErrorMessage,setBlogs,setStyle,noteFormRef}) {
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
-  const [author, setAuthor] = useState("");
+function CreateBlog({ setErrorMessage,setBlogs,setStyle,noteFormRef }) {
+  const [title, setTitle] = useState('')
+  const [url, setUrl] = useState('')
+  const [author, setAuthor] = useState('')
   const blogForm = () => (
     <form onSubmit={handleBlogPost}>
       <div>
         <label>
           title:
           <input
-            type="text"
+            type='text'
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           />
@@ -21,7 +21,7 @@ function CreateBlog({setErrorMessage,setBlogs,setStyle,noteFormRef}) {
         <label>
           author:
           <input
-            type="text"
+            type='text'
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
           />
@@ -31,53 +31,53 @@ function CreateBlog({setErrorMessage,setBlogs,setStyle,noteFormRef}) {
         <label>
           url:
           <input
-            type="text"
+            type='text'
             value={url}
             onChange={({ target }) => setUrl(target.value)}
           />
         </label>
       </div>
-      <button type="submit">create</button>
+      <button type='submit'>create</button>
     </form>
-  );
+  )
   const handleBlogPost = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
-      await blogService.create({ title, author, url });
-      setTitle("");
-      setUrl("");
-      setAuthor("");
-      const updatedBlogs = await blogService.getAll();
-      setBlogs(updatedBlogs);
+      await blogService.create({ title, author, url })
+      setTitle('')
+      setUrl('')
+      setAuthor('')
+      const updatedBlogs = await blogService.getAll()
+      setBlogs(updatedBlogs)
       setStyle({
-        border: "4px solid green",
-        paddingLeft: "5px",
-        borderRadius: "10px",
-        color: "green",
-      });
-      noteFormRef.current.toggleVisibility();
-      setErrorMessage(`A new Blog ${title} by ${author} added`);
+        border: '4px solid green',
+        paddingLeft: '5px',
+        borderRadius: '10px',
+        color: 'green',
+      })
+      noteFormRef.current.toggleVisibility()
+      setErrorMessage(`A new Blog ${title} by ${author} added`)
       setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+        setErrorMessage(null)
+      }, 5000)
     } catch {
-      setErrorMessage("Failed to add new blog");
+      setErrorMessage('Failed to add new blog')
       setStyle({
-        border: "4px solid red",
-        paddingLeft: "5px",
-        borderRadius: "10px",
-        color: "Red",
-      });
+        border: '4px solid red',
+        paddingLeft: '5px',
+        borderRadius: '10px',
+        color: 'Red',
+      })
       setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+        setErrorMessage(null)
+      }, 5000)
     }
-  };
+  }
 
   return <div>
-  {
-    blogForm()
-  }</div>;
+    {
+      blogForm()
+    }</div>
 }
 
-export default CreateBlog;
+export default CreateBlog
