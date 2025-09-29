@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/loginService";
 import Notification from "./components/Notification";
+import Togglable from "./components/Togglable";
 const App = () => {
+  const noteFormRef = useRef();
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -55,19 +57,20 @@ const App = () => {
       setAuthor("");
       const updatedBlogs = await blogService.getAll();
       setBlogs(updatedBlogs);
-       setStyle({
+      setStyle({
         border: "4px solid green",
         paddingLeft: "5px",
         borderRadius: "10px",
         color: "green",
       });
+      noteFormRef.current.toggleVisibility();
       setErrorMessage(`A new Blog ${title} by ${author} added`);
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
     } catch {
       setErrorMessage("Failed to add new blog");
-       setStyle({
+      setStyle({
         border: "4px solid red",
         paddingLeft: "5px",
         borderRadius: "10px",
@@ -178,8 +181,9 @@ const App = () => {
             <button onClick={handleLogout}>logout</button>
           </p>
           <br />
-          <br />
-          {blogForm()}
+          <Togglable buttonLabel="create new blog" ref={noteFormRef}>
+            {blogForm()}
+          </Togglable>
           <br />
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
