@@ -109,11 +109,11 @@ const App = () => {
           </p>
           <br />
           <Togglable buttonLabel="create new blog" ref={noteFormRef}>
-            <CreateBlog  setErrorMessage={setErrorMessage} setBlogs={setBlogs} setStyle={setStyle} noteFormRef={noteFormRef}/>
+            <CreateBlog  setErrorMessage={setErrorMessage} setBlogs={setBlogs} setStyle={setStyle} noteFormRef={noteFormRef} />
           </Togglable>
           <br />
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} user={user} />
           ))}
         </>
       )}
