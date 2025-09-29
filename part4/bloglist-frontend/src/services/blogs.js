@@ -3,11 +3,10 @@ const baseUrl = '/api/blogs'
 let token=null;
 const setToken=(newToken)=>{
    token=`Bearer ${newToken}`
-   console.log(token)
 }
 const getAll = () => {
   const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+  return request.then(response => response.data.sort((a,b)=>b.likes-a.likes))
 }
 const updateLikes = async (id, newLikes) => {
   const response = await axios.put(`${baseUrl}/${id}`, { likes: newLikes });
