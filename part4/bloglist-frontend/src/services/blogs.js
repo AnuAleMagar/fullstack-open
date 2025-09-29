@@ -9,6 +9,10 @@ const getAll = () => {
   const request = axios.get(baseUrl)
   return request.then(response => response.data)
 }
+const updateLikes = async (id, newLikes) => {
+  const response = await axios.put(`${baseUrl}/${id}`, { likes: newLikes });
+  return response.data;
+};
 
 const create=async(newNote)=>{
   const config={
@@ -17,4 +21,4 @@ const create=async(newNote)=>{
    const request = await axios.post(baseUrl,newNote,config)
    return request.data
 }
-export default { getAll ,create, setToken}
+export default { getAll ,create, setToken,updateLikes}
