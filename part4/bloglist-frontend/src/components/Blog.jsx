@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
-const Blog = ({ blog, setBlogs }) => {
+const Blog = ({ blog, setBlogs,onLike }) => {
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
 
@@ -20,6 +20,7 @@ const Blog = ({ blog, setBlogs }) => {
       blogService.updateLikes(blog.id, newLikes)
       return newLikes
     })
+    if(onLike) onLike()
   }
   async function handleDelete() {
     try {
