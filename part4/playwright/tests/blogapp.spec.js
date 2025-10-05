@@ -90,29 +90,71 @@ describe("Blog app", () => {
       await page.getByRole("button", { name: "remove" }).click();
       await expect(page.getByText(/^playwright ali/)).not.toBeVisible();
     });
-    
-    test("only the user who added the blog sees the blog's remove button", async ({ page,request }) => {
+
+    test("only the user who added the blog sees the blog's remove button", async ({
+      page,
+      request,
+    }) => {
       await page.getByRole("button", { name: "create new blog" }).click();
       await page.getByLabel("title").fill("playwright");
       await page.getByLabel("author").fill("ali");
       await page.getByLabel("url").fill("https://hello.com");
       await page.getByRole("button", { name: "create" }).click();
       await expect(page.getByText(/^playwright ali/)).toBeVisible();
-      await page.getByRole("button", { name: "view" }).click();    
-      await expect(page.getByRole("button", { name: "remove" })).toBeVisible();    
+      await page.getByRole("button", { name: "view" }).click();
+      await expect(page.getByRole("button", { name: "remove" })).toBeVisible();
       await page.getByRole("button", { name: "logout" }).click();
       await request.post("http://localhost:3003/api/users", {
-      data: {
-        name: "bob",
-        username: "bob",
-        password: "password",
-       },
+        data: {
+          name: "bob",
+          username: "bob",
+          password: "password",
+        },
       });
-    await page.getByLabel("username").fill("bob");
-    await page.getByLabel("password").fill("password");
-    await page.getByRole("button", { name: "login" }).click();
-    await page.getByRole("button", { name: "view" }).click();    
-    await expect(page.getByRole("button", { name: "remove" })).toHaveCount(0); 
+      await page.getByLabel("username").fill("bob");
+      await page.getByLabel("password").fill("password");
+      await page.getByRole("button", { name: "login" }).click();
+      await page.getByRole("button", { name: "view" }).click();
+      await expect(page.getByRole("button", { name: "remove" })).toHaveCount(0);
+    });
+
+    test("the blogs are arranged in the order according to the likes, the blog with the most likes first.", async ({
+      page,
+    }) => {
+      await page.getByRole("button", { name: "create new blog" }).click();
+      await page.getByLabel("title").fill("playwright");
+      await page.getByLabel("author").fill("ali");
+      await page.getByLabel("url").fill("https://hello.com");
+      await page.getByRole("button", { name: "create" }).click();
+      await expect(page.getByText(/^playwright ali/)).toBeVisible();
+
+      //create another blog
+      await page.getByRole("button", { name: "create new blog" }).click();
+      await page.getByLabel("title").fill("second blog");
+      await page.getByLabel("author").fill("ali");
+      await page.getByLabel("url").fill("https://hello.com2");
+      await page.getByRole("button", { name: "create" }).click();
+      await expect(page.getByText(/^second blog/)).toBeVisible();
+      await page.getByRole("button", { name: "view" }).nth(1).click();
+      await page.getByRole("button", { name: "like" }).click();
+      await page.getByRole("button", { name: "like" }).click();
+      await page.getByRole("button", { name: "like" }).click();
+      const likesElement = page.locator("text=Likes").first().locator("..");
+      await expect(likesElement).toContainText("Likes: 3");
+
+      await page.reload();
+      if (await page.getByRole("button", { name: "login" }).isVisible()) {
+        // Log in again
+        await page.getByLabel("username").fill("ali");
+        await page.getByLabel("password").fill("password");
+        await page.getByRole("button", { name: "login" }).click();
+      }
+
+      await expect(page.locator(".blog")).toHaveCount(2);
+      const blogTitles = await page.locator(".blog").allTextContents();
+      console.log(blogTitles);
+      expect(blogTitles[0]).toContain("second blog");
+      expect(blogTitles[1]).toContain("playwright");
     });
   });
 });

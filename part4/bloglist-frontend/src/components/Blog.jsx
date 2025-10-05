@@ -39,7 +39,7 @@ const Blog = ({ blog, setBlogs,onLike, user }) => {
     }
   }
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       {blog.title} {blog.author}{' '}
       {!visible && <button onClick={handleClick}>view</button>}
       {visible && (
