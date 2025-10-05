@@ -15,12 +15,15 @@ const Blog = ({ blog, setBlogs,onLike }) => {
     setVisible(!visible)
   }
   function handleLikeClick() {
+    if(onLike){
+      onLike()
+      return
+    }
     setLikes((prev) => {
       const newLikes = prev + 1
       blogService.updateLikes(blog.id, newLikes)
       return newLikes
     })
-    if(onLike) onLike()
   }
   async function handleDelete() {
     try {

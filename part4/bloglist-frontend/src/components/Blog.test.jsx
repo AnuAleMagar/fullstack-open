@@ -2,13 +2,6 @@ import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
 import { expect } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import blogService from '../services/blogs'
-
-beforeAll(() => {
-  vi.spyOn(blogService, 'updateLikes').mockImplementation(() =>
-    Promise.resolve({})
-  )
-})
 test('renders author and title content', () => {
   const blog = {
     title: 'testing content',
