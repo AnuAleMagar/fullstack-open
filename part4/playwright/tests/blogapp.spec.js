@@ -67,10 +67,28 @@ describe("Blog app", () => {
       await page.getByLabel("author").fill("ali");
       await page.getByLabel("url").fill("https://hello.com");
       await page.getByRole("button", { name: "create" }).click();
+      await expect(
+        page.getByText(/^new blog created by playwright ali/)
+      ).toBeVisible();
       await page.getByRole("button", { name: "view" }).click();
       await page.getByRole("button", { name: "like" }).click();
       const likesElement = page.locator("text=Likes").first().locator("..");
       await expect(likesElement).toContainText("Likes: 1");
+    });
+    test("the user who added the blog can delete it", async ({ page }) => {
+      await page.getByRole("button", { name: "create new blog" }).click();
+      await page.getByLabel("title").fill("playwright");
+      await page.getByLabel("author").fill("ali");
+      await page.getByLabel("url").fill("https://hello.com");
+      await page.getByRole("button", { name: "create" }).click();
+      await expect(page.getByText(/^playwright ali/)).toBeVisible();
+      await page.getByRole("button", { name: "view" }).click();
+      page.once("dialog", async (dialog) => {
+        expect(dialog.message()).toContain("Remove blog playwright by ali?");
+        await dialog.accept();
+      });
+      await page.getByRole("button", { name: "remove" }).click();
+      await expect(page.getByText(/^playwright ali/)).not.toBeVisible();
     });
   });
 });
