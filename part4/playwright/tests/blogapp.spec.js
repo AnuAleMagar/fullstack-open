@@ -2,9 +2,6 @@ const { test, expect, beforeEach, describe } = require('@playwright/test')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    // empty the db here
-    // create a user for the backend here
-    // ...
     await request.post('http://localhost:3003/api/testing/reset')
     await request.post('http://localhost:3003/api/users', {
       data: {
@@ -47,4 +44,22 @@ describe('Blog app', () => {
    await expect(page.getByText('ali logged in')).not.toBeVisible()
    })
   })
+
+ describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByLabel('username').fill('ali')
+      await page.getByLabel('password').fill('password')
+      await page.getByRole('button', { name: 'login' }).click()
+    })
+
+    test('a new note can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'create new blog' }).click()
+      await page.getByLabel('title').fill('new blog created by playwright')
+      await page.getByLabel('author').fill('ali')
+      await page.getByLabel('url').fill('https://hello.com')
+      await page.getByRole('button', { name: 'create' }).click()
+      await expect(page.getByText(/^new blog created by playwright ali/)).toBeVisible()
+    })
+
+})
 })
