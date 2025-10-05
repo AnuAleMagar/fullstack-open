@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
-import Notification from './components/Notification'
+import AppNotification from './components/Notification'
 import Togglable from './components/Togglable'
 import CreateBlog from './components/CreateBlog'
 import blogService from './services/blogs'
@@ -26,14 +26,21 @@ const App = () => {
 
   return (
     <div>
-      <LoginForm user={user} setUser={setUser} errorMessage={errorMessage} setErrorMessage={setErrorMessage} style={style} setStyle={setStyle}/>
+      <LoginForm
+        user={user}
+        setUser={setUser}
+        errorMessage={errorMessage}
+        setErrorMessage={setErrorMessage}
+        style={style}
+        setStyle={setStyle}
+      />
       {user && (
         <>
           {' '}
           <h2>blogs</h2>
           {errorMessage && (
             <div style={style}>
-              <Notification message={errorMessage} />
+              <AppNotification message={errorMessage} />
             </div>
           )}
           <p>
@@ -42,11 +49,16 @@ const App = () => {
           </p>
           <br />
           <Togglable buttonLabel='create new blog' ref={noteFormRef}>
-            <CreateBlog  setErrorMessage={setErrorMessage} setBlogs={setBlogs} setStyle={setStyle} noteFormRef={noteFormRef} />
+            <CreateBlog
+              setErrorMessage={setErrorMessage}
+              setBlogs={setBlogs}
+              setStyle={setStyle}
+              noteFormRef={noteFormRef}
+            />
           </Togglable>
           <br />
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog}  setBlogs={setBlogs} />
+            <Blog key={blog.id} blog={blog} setBlogs={setBlogs} />
           ))}
         </>
       )}

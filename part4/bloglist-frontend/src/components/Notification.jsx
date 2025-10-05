@@ -1,10 +1,9 @@
-
-function Notification({ message }) {
+function AppNotification({ message, className }) {
   return (
     <>
-      <p>{message}</p>
+      <p className={className}>{message}</p>
     </>
   )
 }
 
-export default Notification
+export default AppNotification
