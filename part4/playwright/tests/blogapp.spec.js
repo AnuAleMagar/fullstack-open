@@ -90,5 +90,29 @@ describe("Blog app", () => {
       await page.getByRole("button", { name: "remove" }).click();
       await expect(page.getByText(/^playwright ali/)).not.toBeVisible();
     });
+    
+    test("only the user who added the blog sees the blog's remove button", async ({ page,request }) => {
+      await page.getByRole("button", { name: "create new blog" }).click();
+      await page.getByLabel("title").fill("playwright");
+      await page.getByLabel("author").fill("ali");
+      await page.getByLabel("url").fill("https://hello.com");
+      await page.getByRole("button", { name: "create" }).click();
+      await expect(page.getByText(/^playwright ali/)).toBeVisible();
+      await page.getByRole("button", { name: "view" }).click();    
+      await expect(page.getByRole("button", { name: "remove" })).toBeVisible();    
+      await page.getByRole("button", { name: "logout" }).click();
+      await request.post("http://localhost:3003/api/users", {
+      data: {
+        name: "bob",
+        username: "bob",
+        password: "password",
+       },
+      });
+    await page.getByLabel("username").fill("bob");
+    await page.getByLabel("password").fill("password");
+    await page.getByRole("button", { name: "login" }).click();
+    await page.getByRole("button", { name: "view" }).click();    
+    await expect(page.getByRole("button", { name: "remove" })).toHaveCount(0); 
+    });
   });
 });
