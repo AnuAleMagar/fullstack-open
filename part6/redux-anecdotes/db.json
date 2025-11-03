@@ -48,7 +48,12 @@
     {
       "id": "ec11",
       "content": "Hello",
-      "votes": 0
+      "votes": 2
+    },
+    {
+      "id": "a862",
+      "content": "goodbye",
+      "votes": 3
     }
   ]
 }

@@ -44,6 +44,11 @@ export const createAnecdoteFromThunk = (content) => {
     dispatch(setAll(newAnecdote));
   }
 }
-
+export const addVoteFromThunk = (id) => {
+  return async (dispatch) => {
+    const updatedAnecdote = await anecdotesServices.updateAnecdote(id);
+    dispatch(setAll(updatedAnecdote));
+  }
+}
 export const { createAnecdote, addVote ,setAll} = anecdoteSlice.actions;
 export default anecdoteSlice.reducer;

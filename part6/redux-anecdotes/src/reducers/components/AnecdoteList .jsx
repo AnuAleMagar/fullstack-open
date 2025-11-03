@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { addVote,initializeAnecdotes } from "../anecdoteReducer";
+import { initializeAnecdotes,addVoteFromThunk } from "../anecdoteReducer";
 import { setNotification, removeNotification } from "../notificationReducer";
 
 function AnecdoteList() {
@@ -17,7 +17,7 @@ function AnecdoteList() {
   const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes);
 
   const vote = (id, anecdote) => {
-    dispatch(addVote(id));
+    dispatch(addVoteFromThunk(id));
     dispatch(setNotification(`You voted '${anecdote.content}'`));
     if (window.notificationTimeout) {
       clearTimeout(window.notificationTimeout);

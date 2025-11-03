@@ -1,27 +1,44 @@
-const baseUrl = 'http://localhost:3001/anecdotes'
+const baseUrl = "http://localhost:3001/anecdotes";
 
 const getAll = async () => {
-  const response = await fetch(baseUrl)
+  const response = await fetch(baseUrl);
 
   if (!response.ok) {
-    throw new Error('Failed to fetch notes')
+    throw new Error("Failed to fetch notes");
   }
 
-  const data = await response.json()
-  return data
-}
+  const data = await response.json();
+  return data;
+};
 const createNew = async (content) => {
   const response = await fetch(baseUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content, votes:0 }),
-  })
-  
-  if (!response.ok) {
-    throw new Error('Failed to create note')
-  }
-  
-  return await response.json()
-}
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content, votes: 0 }),
+  });
 
-export default { getAll,createNew }
+  if (!response.ok) {
+    throw new Error("Failed to create note");
+  }
+
+  return await response.json();
+};
+const updateAnecdote = async (id) => {
+  const getResponse = await fetch(`${baseUrl}/${id}`);
+  if (!getResponse.ok) {
+    throw new Error("Failed to fetch anecdote for update");
+  }
+  const anecdote = await getResponse.json();
+  const updatedAnecdote = { ...anecdote, votes: anecdote.votes + 1 };
+  const response = await fetch(`${baseUrl}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedAnecdote),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to update anecdote");
+  }
+  return await response.json();
+};
+
+export default { getAll, createNew, updateAnecdote };
