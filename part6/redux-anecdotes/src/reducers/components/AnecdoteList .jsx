@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { initializeAnecdotes,addVoteFromThunk } from "../anecdoteReducer";
-import { setNotification, removeNotification } from "../notificationReducer";
+import { setNotificationFromThunk } from "../notificationReducer";
 
 function AnecdoteList() {
 
@@ -18,13 +18,7 @@ function AnecdoteList() {
 
   const vote = (id, anecdote) => {
     dispatch(addVoteFromThunk(id));
-    dispatch(setNotification(`You voted '${anecdote.content}'`));
-    if (window.notificationTimeout) {
-      clearTimeout(window.notificationTimeout);
-    }
-    window.notificationTimeout = setTimeout(() => {
-      dispatch(removeNotification());
-    }, 5000);
+    dispatch(setNotificationFromThunk(`You voted '${anecdote.content}'`,1000));
   };
   useEffect(() => {
     dispatch(initializeAnecdotes())
