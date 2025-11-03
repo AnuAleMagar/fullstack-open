@@ -38,6 +38,12 @@ export const initializeAnecdotes = () => {
     dispatch(setAll(anecdotes))
   }
 }
+export const createAnecdoteFromThunk = (content) => {
+  return async (dispatch) => {
+    const newAnecdote = await anecdotesServices.createNew(content);
+    dispatch(setAll(newAnecdote));
+  }
+}
 
 export const { createAnecdote, addVote ,setAll} = anecdoteSlice.actions;
 export default anecdoteSlice.reducer;
