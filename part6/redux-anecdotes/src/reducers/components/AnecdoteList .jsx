@@ -1,7 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addVote } from "../anecdoteReducer";
-import { setNotification,removeNotification} from "../notificationReducer";
+import { useEffect } from "react";
+import { addVote,setAll } from "../anecdoteReducer";
+import { setNotification, removeNotification } from "../notificationReducer";
+import anecdotesServices from "../../services/anecdotesServices";
+
 function AnecdoteList() {
+
   const anecdotes = useSelector((state) => {
     const filteredData = state.anecdotes.filter((anecdote) =>
       anecdote.content.includes(state.filter)
@@ -23,6 +27,9 @@ function AnecdoteList() {
       dispatch(removeNotification());
     }, 5000);
   };
+  useEffect(() => {
+    anecdotesServices.getAll().then((anecdotes) => dispatch(setAll(anecdotes)));
+  }, [dispatch]);
 
   return (
     <>
