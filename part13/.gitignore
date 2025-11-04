@@ -1,0 +1,28 @@
+# Node.js dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+.eslintcache
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Build output
+build/
+dist/
+
+# Coverage reports
+coverage/
+
+# IDE specific files (e.g., VS Code)
+.vscode/
+.idea/
+
+# macOS specific files
+.DS_Store
