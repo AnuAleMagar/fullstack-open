@@ -18,34 +18,24 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:id", blogFinder, async (req, res) => {
-  try {
-    if (req.blog) {
-      req.blog.likes=req.body.likes
-      await req.blog.save()
-      res.json(req.blog)
-    }else{
-      return res.status(404).json({ error: "Blog not found" });
-    }
-  } catch (error) {
-    console.error("Error Updating blog:", error);
-    res.status(500).json({ error: "Internal server error" });
+  if (req.blog) {
+    req.blog.likes = req.body.likes;
+    await req.blog.save();
+    res.json(req.blog);
+  } else {
+    return res.status(404).json({ error: "Blog not found" });
   }
 });
 
 router.delete("/:id", blogFinder, async (req, res) => {
-  try {
-    if (!req.blog) {
-      return res.status(404).json({ error: "Blog not found" });
-    }
-
-    await req.blog.destroy();
-    res.json({
-      message: `Deleted blog with ID ${req.blog.id}`,
-      blog: req.blog,
-    });
-  } catch (error) {
-    console.error("Error deleting blog:", error);
-    res.status(500).json({ error: "Internal server error" });
+  if (!req.blog) {
+    return res.status(404).json({ error: "Blog not found" });
   }
+
+  await req.blog.destroy();
+  res.json({
+    message: `Deleted blog with ID ${req.blog.id}`,
+    blog: req.blog,
+  });
 });
 module.exports = router;
