@@ -17,6 +17,21 @@ router.post("/", async (req, res) => {
   res.json(blog);
 });
 
+router.put("/:id", blogFinder, async (req, res) => {
+  try {
+    if (req.blog) {
+      req.blog.likes=req.body.likes
+      await req.blog.save()
+      res.json(req.blog)
+    }else{
+      return res.status(404).json({ error: "Blog not found" });
+    }
+  } catch (error) {
+    console.error("Error Updating blog:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.delete("/:id", blogFinder, async (req, res) => {
   try {
     if (!req.blog) {
