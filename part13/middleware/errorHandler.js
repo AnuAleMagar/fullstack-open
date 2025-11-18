@@ -3,7 +3,15 @@ const Sequelize = require("sequelize");
 module.exports = (err, req, res, next) => {
   console.error(err);
 
-  if (err instanceof Sequelize.ValidationError || err instanceof Sequelize.UniqueConstraintError) {
+  // Handle JSON parse errors
+  if (err.type === "entity.parse.failed") {
+    return res.status(400).json({ error: "Invalid JSON in request body" });
+  }
+
+  if (
+    err instanceof Sequelize.ValidationError ||
+    err instanceof Sequelize.UniqueConstraintError
+  ) {
     return res.status(400).json({ error: err.message });
   }
 
@@ -11,7 +19,7 @@ module.exports = (err, req, res, next) => {
     return res.status(400).json({ error: err.message });
   }
   if (err instanceof Sequelize.ValidationError) {
-    return res.status(400).json({ error: err.errors.map(e => e.message) });
+    return res.status(400).json({ error: err.errors.map((e) => e.message) });
   }
   res.status(500).json({ error: "Internal server error" });
 };
