@@ -8,7 +8,7 @@ const userRouter = require("./controllers/users");
 const { connectToDatabase } = require("./util/db");
 const errorHandler = require("./middleware/errorHandler");
 const loginRouter = require("./controllers/login");
-
+const authorsRouter = require("./controllers/authors");
 // JSON parser with error handling for empty/invalid bodies
 app.use((req, res, next) => {
   express.json()(req, res, (err) => {
@@ -23,6 +23,7 @@ app.use((req, res, next) => {
 app.use("/api/blogs", blogRouter);
 app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
+app.use("/api/authors", authorsRouter);
 app.use(errorHandler);
 
 const start = async () => {
