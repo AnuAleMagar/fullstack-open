@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Blog } = require("../models");
+const { Blog, User } = require("../models");
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.SECRET;
 
@@ -17,7 +17,11 @@ const tokenExtractor = (req, res, next) => {
 };
 
 router.get("/", tokenExtractor, async (req, res) => {
-  const blogs = await Blog.findAll();
+  const blogs = await Blog.findAll({
+    include: {
+      model: User
+    }
+  });
   res.json(blogs);
 });
 
