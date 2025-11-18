@@ -40,6 +40,7 @@ router.get("/", tokenExtractor, async (req, res) => {
     include: {
       model: User,
     },
+    order: [['likes', 'DESC']] 
   });
   res.json(blogs);
 });
