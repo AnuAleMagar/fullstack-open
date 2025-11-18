@@ -1,5 +1,3 @@
-//Make a route for the application /api/authors that returns the number of blogs for each
-//author in the database. The route should return a JSON object with the author as the key and the number of blogs as the value.
 
 const router = require("express").Router();
 const { Blog } = require("../models");
