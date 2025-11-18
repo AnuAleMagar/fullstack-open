@@ -1,18 +1,37 @@
 const router = require("express").Router();
-const { User,Blog } = require("../models");
+const { User, Blog } = require("../models");
 
 const userFinder = async (req, res, next) => {
-   req.user = await User.findOne({ where: { username: req.params.username } });
+  req.user = await User.findOne({ where: { username: req.params.username } });
   next();
 };
 
 router.get("/", async (req, res) => {
   const users = await User.findAll({
     include: {
-        model: Blog
-      }
+      model: Blog
+    }
   });
   res.json(users);
+});
+
+router.get("/:id", async (req, res) => {
+  const user = await User.findByPk(req.params.id, {
+    attributes: { exclude: ["createdAt", "updatedAt"] }, 
+    include: [
+      {
+        model: Blog,
+        as: "readings", 
+        attributes: { exclude: ["createdAt", "updatedAt", "userId"] }, 
+      }
+    ]
+  });
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json(user);
 });
 
 router.post("/", async (req, res) => {
